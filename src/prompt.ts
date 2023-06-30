@@ -31,3 +31,24 @@ export const getOptionMessages = (word: string) => [
     `,
   },
 ];
+
+export const getSuggestionMessage = (words: string) => [
+  {
+    role: "system",
+    content: "You are a helpful assistant.",
+  },
+  {
+    role: "user",
+    content: `
+    I will give you servery words, you should give me the explanation both in English and Chinese of each words, and give me an example of how to use the word, imagine me as a student.
+    
+    The message format is like:
+    
+    1. Apple
+      English Definition: ...
+      Chinese Definition: ...
+      Example: ...
+    The words are ${words}
+    `,
+  },
+];
