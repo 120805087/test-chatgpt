@@ -1,0 +1,12 @@
+{
+  "name": "test-chatgpt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/120805087/test-chatgpt.git",
+  "author": "冯楠楠 <fengnannan@mstdt.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/node": "^2.15.3",
+    "typescript": "^5.1.6"
+  }
+}
