@@ -1,27 +1,28 @@
-import { pipeline } from "node:stream";
-import { promisify } from "node:util";
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import { VercelRequest } from "@vercel/node";
 
 import { makeCompletionStream, makeCompletion } from "../src/openai";
 import { askCustomerServiceMessages } from "../src/messages";
 
-export default async function handler(
-  request: VercelRequest,
-  response: VercelResponse
-) {
-  const { question, stream } = request.query;
+// 使用边缘函数，无法使用的 nodejs 的一些的API
+// 支持的API https://vercel.com/docs/concepts/functions/edge-functions/edge-runtime#supported-apis
+export const config = {
+  runtime: "edge",
+};
+
+export default async function handler(request: VercelRequest) {
+  const { searchParams } = new URL(request.url!);
+  const question = searchParams.get("question");
+  const stream = searchParams.get("stream");
 
   const messages = await askCustomerServiceMessages(question as string);
 
   if (!!stream) {
     const res = await makeCompletionStream(messages);
 
-    const streamPipeline = promisify(pipeline);
-
-    return await streamPipeline(res.body as any, response);
+    return new Response(res.body as any);
   }
 
-  const content = await makeCompletion(messages);
+  const completion = await makeCompletion(messages);
 
-  return response.send(content);
+  return new Response(completion);
 }

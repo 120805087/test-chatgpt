@@ -1,20 +1,18 @@
-import { pipeline } from "node:stream";
-import { promisify } from "node:util";
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import { VercelRequest } from "@vercel/node";
 
 import { getSuggestionMessage } from "../src/prompt";
 import { makeCompletionStream } from "../src/openai";
 
-export default async function handler(
-  request: VercelRequest,
-  response: VercelResponse
-) {
-  const { word } = request.query;
+export const config = {
+  runtime: "edge",
+};
+
+export default async function handler(request: VercelRequest) {
+  const { searchParams } = new URL(request.url!);
+  const word = searchParams.get("word");
 
   const messages = getSuggestionMessage(word as string);
   const res = await makeCompletionStream(messages);
 
-  const streamPipeline = promisify(pipeline);
-
-  return await streamPipeline(res.body as any, response);
+  return new Response(res.body as any);
 }

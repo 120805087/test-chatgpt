@@ -1,15 +1,17 @@
-import { VercelRequest, VercelResponse } from "@vercel/node";
+import { VercelRequest } from "@vercel/node";
 import { getOptionMessages } from "../src/prompt";
 import { makeCompletion } from "../src/openai";
 
-export default async function handler(
-  request: VercelRequest,
-  response: VercelResponse
-) {
-  const { word } = request.query;
+export const config = {
+  runtime: "edge",
+};
+
+export default async function handler(request: VercelRequest) {
+  const { searchParams } = new URL(request.url!);
+  const word = searchParams.get("word");
 
   const messages = getOptionMessages(word as string);
-  const content = await makeCompletion(messages);
+  const completion = await makeCompletion(messages);
 
-  return response.send(content);
+  return new Response(completion);
 }
