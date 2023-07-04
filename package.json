@@ -6,6 +6,7 @@
   "author": "冯楠楠 <fengnannan@mstdt.com>",
   "license": "MIT",
   "dependencies": {
+    "@fortaine/fetch-event-source": "^3.0.6",
     "@supabase/supabase-js": "^2.26.0",
     "@vercel/node": "^2.15.3",
     "langchain": "^0.0.102",

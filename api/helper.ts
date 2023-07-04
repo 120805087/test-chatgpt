@@ -19,7 +19,11 @@ export default async function handler(request: VercelRequest) {
   if (!!stream) {
     const res = await makeCompletionStream(messages);
 
-    return new Response(res.body as any);
+    return new Response(res.body as any, {
+      headers: {
+        "Content-Type": "text/event-stream",
+      },
+    });
   }
 
   const completion = await makeCompletion(messages);
